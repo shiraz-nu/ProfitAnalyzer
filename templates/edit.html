@@ -1,0 +1,112 @@
+/edit.html -->
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Edit Transaction - Profit Analyzer</title>
+    <!-- Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">
+    <!-- Google Fonts for typography -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900&amp;display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&amp;display=swap">
+    <!-- Custom CSS for additional styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/styles.min.css') }}">
+</head>
+
+<body>
+    <!-- Navigation bar at the top of the page -->
+    <nav class="navbar navbar-expand-lg fixed-top bg-dark navbar-custom navbar-dark">
+        <div class="container">
+            <!-- Branding title -->
+            <a class="navbar-brand" href="#">PROFIT ANALYZER</a>
+            <!-- Button to toggle navbar for small screens -->
+            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navbarResponsive">
+                <span class="visually-hidden">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Collapsible navbar links -->
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Navigation links -->
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">INPUT DATA</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('analysis') }}">ANALYTICS</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="position-relative py-4 py-xl-5" style="margin: 40px; margin-top: 100px;">
+        <div class="container position-relative">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                    <div class="card mb-5 pb-5">
+                        <div class="card-body p-sm-5 pt-2">
+                            <h2 class="text-center mb-4">Edit Transaction</h2>
+                            <form method="POST" action="{{ url_for('update_transaction', id=transaction.id) }}"
+                                enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Transaction Name</label>
+                                    <input class="form-control" type="text" id="name" name="name" 
+                                        value="{{ transaction.name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="transaction_type" class="form-label">Transaction Type</label>
+                                    <select class="form-select" id="transaction_type" name="transaction_type" required>
+                                        <option value="investment" {% if transaction.transaction_type=='investment'
+                                            %}selected{% endif %}>
+                                            Investment
+                                        </option>
+                                        <option value="expenditure" {% if transaction.transaction_type=='expenditure'
+                                            %}selected{% endif %}>
+                                            Expenditure
+                                        </option>
+                                        <option value="sales" {% if transaction.transaction_type=='sales' %}selected{%
+                                            endif %}>
+                                            Sales
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="amount" class="form-label">Amount</label>
+                                    <input class="form-control" type="number" id="amount" name="amount"
+                                        value="{{ transaction.amount }}" step="0.01" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="date_time" class="form-label">Date and Time</label>
+                                    <input class="form-control" type="datetime-local" id="date_time" name="date_time"
+                                        value="{{ transaction.date.isoformat() }}T{{ transaction.time.strftime('%H:%M') }}"
+                                        required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="receipt" class="form-label">Receipt Image</label>
+                                    <input class="form-control" type="file" id="receipt" name="receipt" accept="image/*">
+                                    <small class="text-muted">Current receipt: {{ transaction.receipt_image }}</small>
+                                    {% if transaction.receipt_image %}
+                                    <div class="mt-2">
+                                        <img src="{{ url_for('static', filename=transaction.receipt_image) }}" 
+                                             alt="Current Receipt" class="img-thumbnail" style="max-height: 200px;">
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{{ url_for('analysis') }}" class="btn btn-secondary">Cancel</a>
+                                    <button class="btn btn-primary" type="submit">Update Transaction</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="{{ url_for('static', filename='assets/bootstrap/js/bootstrap.min.js') }}"></script>
+</body>
+
+</html>
